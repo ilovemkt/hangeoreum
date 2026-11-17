@@ -648,7 +648,7 @@ const FP = (function(){
   return { all, add, del };
 })();
 // ── 함께 모으는 발자국 (구글 시트) : 주소가 있으면 모두의 발자국을 한곳에 모아요 ──
-const FP_URL = /^https:/.test('') ? '' : '';
+const FP_URL = /^https:/.test('https://script.google.com/macros/s/AKfycbz2bLTtfCons4BjS1kPYeKCKX9x7ZoKGGreyvPKNcPDc4RsK-D7wrRMONQt5w3LPZxU/exec') ? 'https://script.google.com/macros/s/AKfycbz2bLTtfCons4BjS1kPYeKCKX9x7ZoKGGreyvPKNcPDc4RsK-D7wrRMONQt5w3LPZxU/exec' : '';
 const OWNER = (() => { let o = ''; try { o = localStorage.getItem('fp-owner') || ''; if (!o) { o = Date.now().toString(36) + Math.random().toString(36).slice(2, 10); localStorage.setItem('fp-owner', o); } } catch (e) { o = 'x' + Math.random().toString(36).slice(2, 10); } return o; })();
 const justSaved = {};
 const RFP = {
