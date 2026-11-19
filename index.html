@@ -128,6 +128,7 @@ body{margin:0;background:linear-gradient(180deg,#f4efe6 0%,var(--mist) 55%,var(-
 #turn{position:fixed;inset:0;z-index:40;background:rgba(244,239,230,.96);display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px max(16px,env(safe-area-inset-left,0px))}
 @media (orientation:portrait) and (max-width:620px){#turn{display:flex}}
 #turn.gone{display:none!important}
+.auto .bar,.auto #hint,.auto .hint{visibility:hidden}
 #turn .ph{width:54px;height:90px;border:3px solid var(--gold);border-radius:10px;animation:tilt 2.4s ease-in-out infinite}
 @keyframes tilt{0%,30%{transform:rotate(0)}55%,85%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
 #turn p{margin:0;font-family:var(--title);font-size:17px;line-height:1.7;color:var(--ink)}
@@ -625,7 +626,27 @@ flist.addEventListener('click', e => {
   ['pointerdown','keydown','touchstart'].forEach(t=>document.addEventListener(t,first,true));
 })();
 
+// ── 자동으로 넘기기 (자동재생 주소 /auto/ 에서만 켜져요) ──
+const AUTO = window.AUTO_PLAY === true || /[?&]auto\b/.test(location.search);
+if (AUTO) {
+  document.documentElement.classList.add('auto');
+  document.getElementById('turn').classList.add('gone');
+  const STAY = 7000, STAY_END = 9000, IDLE = 20000;   // 한 쪽에 머무는 시간, 뒤표지에서 머무는 시간, 손댄 뒤 다시 시작까지
+  let idleUntil = 0;
+  ['pointerdown','keydown','touchstart','wheel'].forEach(t => document.addEventListener(t, () => { idleUntil = Date.now() + IDLE; }, true));
+  const tick = () => {
+    let wait = STAY;
+    if (flip && Date.now() >= idleUntil) {
+      const cur = flip.getCurrentPageIndex(), last = pages.length - 1;
+      if (cur >= last) { flip.turnToPage(0); update(0); }
+      else { flip.flipNext(); if (cur + (twoUpNow && cur > 0 ? 2 : 1) >= last) wait = STAY_END; }
+    }
+    setTimeout(tick, wait);
+  };
+  setTimeout(tick, STAY);
+}
 </script>
+
 
 </body>
 </html>
